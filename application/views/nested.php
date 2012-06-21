@@ -6,7 +6,7 @@
 		<link type="text/css" href="<?php echo base_url(); ?>assets/css/smoothness/jquery-ui-1.8.17.custom.css" rel="stylesheet" />	
 		<script type="text/javascript" src="<?php echo base_url(); ?>assets/js/jquery-1.7.1.min.js"></script>
 		<script type="text/javascript" src="<?php echo base_url(); ?>assets/js/jquery-ui-1.8.17.custom.min.js"></script>
-		<script type="text/javascript" src="<?php echo base_url(); ?>assets/js/jquery.ui.nestedSortable.js"></script>
+		<script type="text/javascript" src="<?php echo base_url(); ?>assets/js/jquery.mjs.nestedSortable.js"></script>
 
 		<style type="text/css">
 
@@ -19,12 +19,18 @@
 		.validateTips { border: 1px solid transparent; padding: 0.3em; }
 		
 		.placeholder {
-			background-color: #cfcfcf;
+			border: 1px dashed #4183C4;
+			-webkit-border-radius: 3px;
+			-moz-border-radius: 3px;
+			border-radius: 3px;
 		}
-		.ui-nestedSortable-error {
-			background:#fbe3e4;
-			color:#8a1f11;
+		
+
+		.mjs-nestedSortable-error {
+			background: #fbe3e4;
+			border-color: transparent;
 		}
+		
 		ol {
 			margin: 0;
 			padding: 0;
@@ -44,20 +50,35 @@
 			padding: 0;
 		}
 
-		.sortable li div {
-			border: 1px solid black;
+		.sortable li div.cont  {
+			border: 1px solid #d4d4d4;
+			position: relative;
+			z-index: 1;
+			-webkit-border-radius: 3px;
+			-moz-border-radius: 3px;
+			border-radius: 3px;
+			border-color: #D4D4D4 #D4D4D4 #BCBCBC;
 			padding: 3px;
 			margin: 0;
-			/*cursor: move;*/
+			background: #f6f6f6;
+			background: -moz-linear-gradient(top,  #ffffff 0%, #f6f6f6 47%, #ededed 100%);
+			background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(47%,#f6f6f6), color-stop(100%,#ededed));
+			background: -webkit-linear-gradient(top,  #ffffff 0%,#f6f6f6 47%,#ededed 100%);
+			background: -o-linear-gradient(top,  #ffffff 0%,#f6f6f6 47%,#ededed 100%);
+			background: -ms-linear-gradient(top,  #ffffff 0%,#f6f6f6 47%,#ededed 100%);
+			background: linear-gradient(top,  #ffffff 0%,#f6f6f6 47%,#ededed 100%);
+			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ededed',GradientType=0 );
+			
 		}
+		
 		.sortable li div span.handle {
 			cursor: pointer;
 		}	
 		.deletebutton {
-			float:right;position:relative;right:0px;top:0px;display:block;width:8px;height:8px;margin:0;padding:0;background-image:url('<?php echo base_url(); ?>assets/img/Delete.gif');border: 0px solid transparent !important;cursor:pointer;opacity:0.4;filter:alpha(opacity=40);}
+			float:right;position:relative;right:0px;top:0px;display:block;width:12px;height:12px;margin:0;padding:0;background-image:url('<?php echo base_url(); ?>assets/img/Delete.gif');cursor:pointer;opacity:0.4;filter:alpha(opacity=40);z-index: 2 !important;}
 		.deletebutton:hover {opacity:1.0;filter:alpha(opacity=100);}
 		.editbutton {
-			float:right;position:relative;right:0px;top:0px;display:block;width:8px;height:8px;margin:0;padding:0;background-image:url('<?php echo base_url(); ?>assets/img/edit.gif');border: 0px solid transparent !important;cursor:pointer;opacity:0.4;filter:alpha(opacity=40);}
+			float:right;position:relative;right:0px;top:0px;display:block;width:12px;height:12px;margin:0;padding:0;background-image:url('<?php echo base_url(); ?>assets/img/edit.gif');cursor:pointer;opacity:0.4;filter:alpha(opacity=40);}
 		.editbutton:hover {opacity:1.0;filter:alpha(opacity=100);}
 		</style>
 		
@@ -167,8 +188,8 @@
 			  	$.each(items, function(i,item){ // 
 			  	 if(item.depth == j)	 {nestedhtml += '</li>';}
 			  	 else if(parseInt(item.depth) > j){nestedhtml += '<ol>';}
-			  	 else if(parseInt(item.depth) < j){nestedhtml += Array(Math.abs(parseInt(item.depth)-parseInt(j+1))).join('</li></ol>') + "</li>";}	
-				 nestedhtml += '<li id="item_' + item.id + '" class="ui-state-default"><div class="cont"><span class="handle" ><a class="ui-icon ui-icon-grip-dotted-vertical" style="float:left;"></a></span><span class="item_title">' + item.title + '</span><small> (' + item.num_pages + ' item)</small><span class="lft" id="'+item.lft+'"></span></div>';
+			  	 else if(parseInt(item.depth) < j){nestedhtml += Array(Math.abs(parseInt(item.depth)-parseInt(j+1))).join('</li></ol>') + "</li>";}	// class="ui-state-default"
+				 nestedhtml += '<li id="item_' + item.id + '"><div class="cont"><span class="handle" ><a class="ui-icon ui-icon-grip-dotted-vertical" style="float:left;"></a></span><span class="item_title">' + item.title + '</span><small> (' + item.num_pages + ' item)</small><span class="lft" id="'+item.lft+'"></span></div>';
 				 if(k == c) { nestedhtml += Array(Math.abs(parseInt(item.depth)-1)).join('</li></ol>') + "</li>" };
 				 k++;
 				 j = parseInt(item.depth);
