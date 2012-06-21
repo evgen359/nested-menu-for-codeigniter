@@ -44,24 +44,24 @@
 			padding: 0;
 		}
 
-		.sortable li div	{
+		.sortable li div {
 			border: 1px solid black;
 			padding: 3px;
 			margin: 0;
 			/*cursor: move;*/
 		}
-		.sortable li div span	 {
+		.sortable li div span.handle {
 			cursor: pointer;
 		}	
 		.deletebutton {
-			float:right;position:relative;right:0px;top:0px;display:block;width:4px;height:4px;margin:0;padding:0;background-image:url('http://localhost:8888/ci/assets/img/Delete.gif');border: 0px solid transparent !important;cursor:pointer
-		}
-		</style>	
-	</head>
-	<body>
+			float:right;position:relative;right:0px;top:0px;display:block;width:8px;height:8px;margin:0;padding:0;background-image:url('<?php echo base_url(); ?>assets/img/Delete.gif');border: 0px solid transparent !important;cursor:pointer;opacity:0.4;filter:alpha(opacity=40);}
+		.deletebutton:hover {opacity:1.0;filter:alpha(opacity=100);}
+		.editbutton {
+			float:right;position:relative;right:0px;top:0px;display:block;width:8px;height:8px;margin:0;padding:0;background-image:url('<?php echo base_url(); ?>assets/img/edit.gif');border: 0px solid transparent !important;cursor:pointer;opacity:0.4;filter:alpha(opacity=40);}
+		.editbutton:hover {opacity:1.0;filter:alpha(opacity=100);}
+		</style>
+		
 		<script>
-
-
 		$(document).ready(function() {
 		
 		var name = $( "#name" )
@@ -168,21 +168,24 @@
 			  	 if(item.depth == j)	 {nestedhtml += '</li>';}
 			  	 else if(parseInt(item.depth) > j){nestedhtml += '<ol>';}
 			  	 else if(parseInt(item.depth) < j){nestedhtml += Array(Math.abs(parseInt(item.depth)-parseInt(j+1))).join('</li></ol>') + "</li>";}	
-				 nestedhtml += '<li id="item_' + item.id + '" class="ui-state-default"><div><span class="handle" ><a class="ui-icon ui-icon-grip-dotted-vertical" style="float:left;"></a></span>' + item.title + '<small> (' + item.num_pages + ' item)</small><span class="lft" id="'+item.lft+'"></span></div>';
+				 nestedhtml += '<li id="item_' + item.id + '" class="ui-state-default"><div class="cont"><span class="handle" ><a class="ui-icon ui-icon-grip-dotted-vertical" style="float:left;"></a></span><span class="item_title">' + item.title + '</span><small> (' + item.num_pages + ' item)</small><span class="lft" id="'+item.lft+'"></span></div>';
 				 if(k == c) { nestedhtml += Array(Math.abs(parseInt(item.depth)-1)).join('</li></ol>') + "</li>" };
 				 k++;
 				 j = parseInt(item.depth);
 				 });
 				 $('#root').html(nestedhtml);
-				 $("<div class='deletebutton'></div>").appendTo("#root.sortable li div");
+				 $("<div class='deletebutton'></div>").appendTo("#root.sortable li div.cont");
+				 $("<div class='editbutton'></div>").appendTo("#root.sortable li div.cont");
+				 
 				 $(".deletebutton").hide();
+				 $(".editbutton").hide();
 				 
 				 if (bNested == false){
 					$(".handle").attr("style","display:none");
 				 }else{
 					$('#root.sortable li div').bind({
-					 mouseenter: function() {$(this).find(".deletebutton").show();},
-					 mouseleave: function() {$(this).find(".deletebutton").hide();},});	
+					 mouseenter: function() {$(this).find(".deletebutton").show();$(this).find(".editbutton").show();},
+					 mouseleave: function() {$(this).find(".deletebutton").hide();$(this).find(".editbutton").hide();},});	
 					 makeNested();
 				 }
 				 
@@ -198,34 +201,49 @@
 					  refresh_menu();
 					}
 				  });
+				  
+				 $('.editbutton').bind('click', function() {
+					if (data = prompt("hede", $(this).parent().find("span.item_title").html()))
+					{	
+					 
+  					  $.ajax({
+					  	 url: "<?php echo base_url(); ?>index.php/nested/ajax_edit",
+					  	 type: "POST",
+					  	 data: ({ title : data, 
+					  	 		  lft : $(this).parent().find("span.lft").attr("id")}),
+					  	 success: function(data){ console.log(data);}
+					  });	
+					  refresh_menu();
+				
+					}
+				  });
+				  
 			  }
 			 });	
 			}
 						
 		});
 		</script>
-			<button id="edit">edit: on</button>
-			<button id="addnew">add new item</button>
+	</head>
+	<body>
+		
+		<button id="edit">edit: on</button>
+		<button id="addnew">add new item</button>
 
 		<div style="width:480px;">
-		<ol class="sortable" id="root">
-		
-		</ol>
+		  <ol class="sortable" id="root"></ol>
 		</div>		
 
-<div id="dialog-form" title="Create new section">
-	<p class="validateTips">All form fields are required.</p>
+        <div id="dialog-form" title="Create new section">
+           <p class="validateTips">All form fields are required.</p>
+           <form>
+            <fieldset>
+              <label for="name">Title</label>
+              <input type="text" name="name" id="name" class="text ui-widget-content ui-corner-all" />
+            </fieldset>
+           </form>
+        </div>
 
-	<form>
-	<fieldset>
-		<label for="name">Title</label>
-		<input type="text" name="name" id="name" class="text ui-widget-content ui-corner-all" />
-	</fieldset>
-	</form>
-</div>
-
-
-		
 	</body>
 </html>
 
